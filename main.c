@@ -13,6 +13,10 @@
 #define MOTD_S "Vault System"
 
 void setup();
+void get_input();
+
+short letters = 4;
+
 char const keyPadMatrix[] =
 {
     '1','2','3',
@@ -22,10 +26,24 @@ char const keyPadMatrix[] =
     0xFF
 };
  
+
 void __interrupt() interrupts() {
-    if (RBIF && RBIE){
-        Lcd_Write_String("Key press");
+    if (INT0IF && INT0IE){
+        //Lcd_Write_String("Key press INT0");
+        get_input();
+        INT0IF = 0;
+    } else if (INT1IF && INT1IE) {
+        get_input();
+        INT1IF = 0;
     }
+    else if (INT2IF && INT2IE) {
+        get_input();
+        INT2IF = 0;
+    } else if (INT3IF && INT3IE) {
+        get_input();
+        INT3IF = 0;
+    }
+    letters--;
     return;
 }
 void main(void) {
@@ -34,7 +52,7 @@ void main(void) {
     Lcd_Write_String(MOTD_S);
     __delay_ms(1000);
     Lcd_Clear();
- 
+    PORTB = 0xF0;
     while(1);
     return;
 }
@@ -46,7 +64,70 @@ void setup() {
     TRISD = 0b00001111;
     TRISE0 = 0;
     TRISE2 = 0;
-    TRISB = 0xF6;
-    INTCON = 0b10001000;
+    TRISB = 0b00000111;
+    INTCON = 0b10010000;
+    INTCON2 = 0b11111000;
+    INTCON3 = 0b00111000;
     Lcd_Init();
+}
+
+void get_input() {
+    __delay_ms(100);
+    PORTB = 0x10; // Test Row A
+    if (PORTBbits.RB0) {
+        // Row A Col 1 
+        Lcd_Write_Char('1');
+    } else if (PORTBbits.RB1) {
+        //ROW A Col 2
+        Lcd_Write_Char('2');
+    } else if (PORTBbits.RB2) {
+        //ROW A Col 3
+        Lcd_Write_Char('3');
+    }
+    
+    PORTB = 0x20; // Test Row B
+    if (PORTBbits.RB0) {
+        // Row B Col 1 
+        Lcd_Write_Char('4');
+    } else if (PORTBbits.RB1) {
+        //ROW B Col 2
+        Lcd_Write_Char('5');
+    } else if (PORTBbits.RB2) {
+        //ROW B Col 3
+        Lcd_Write_Char('6');
+    }
+    
+    PORTB = 0x40; // Test Row C
+    if (PORTBbits.RB0) {
+        // Row C Col 1 
+        Lcd_Write_Char('7');
+    } else if (PORTBbits.RB1) {
+        //ROW C Col 2
+        Lcd_Write_Char('8');
+    } else if (PORTBbits.RB2) {
+        //ROW C Col 3
+        Lcd_Write_Char('9');
+    }
+    
+     PORTB = 0x80; // Test Row C
+    if (PORTBbits.RB0) {
+        // Row D Col 1 
+        Lcd_Write_Char('*');
+    } else if (PORTBbits.RB1) {
+        //ROW D Col 2
+        Lcd_Write_Char('0');
+    } else if (PORTBbits.RB2) {
+        //ROW D Col 3
+        Lcd_Write_Char('#');
+    }
+      __delay_ms(100);
+      Lcd_Clear();
+      if (letters == 0 ) {
+          Lcd_Write_String("checking password");
+          letters = 5;
+      }
+      //else Lcd_Write_String( (char)letters);
+      __delay_ms(300);
+      Lcd_Clear();
+      PORTB = 0xF0;
 }
