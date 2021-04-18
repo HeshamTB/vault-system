@@ -7,15 +7,21 @@
 
 
 #include <xc.h>
+#include <stdlib.h>
+#include <string.h>
 #include "config.h"
 #include "lcd.h"
 
 #define MOTD_S "Vault System"
+#define PASSWD_LENGTH 4
+
+#define PASSWD "1234"
 
 void setup();
 void get_input();
 
-short letters = 4;
+short letters = PASSWD_LENGTH;
+char input[PASSWD_LENGTH];
 
 char const keyPadMatrix[] =
 {
@@ -121,13 +127,19 @@ void get_input() {
         //ROW D Col 3
         input_char = '#';
     }
+      
+      Lcd_Clear();
+      input[PASSWD_LENGTH-letters] = input_char;
+      Lcd_Write_String(input);
       __delay_ms(100);
       Lcd_Clear();
       if (letters == 0 ) {
           Lcd_Write_String("checking password");
-          letters = 5;
+          letters = PASSWD_LENGTH;
       }
       //else Lcd_Write_String( (char)letters);
+      //Lcd_Write_Char('*');
+      
       __delay_ms(300);
       Lcd_Clear();
       PORTB = 0xF0;
