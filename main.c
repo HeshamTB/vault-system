@@ -73,52 +73,53 @@ void setup() {
 
 void get_input() {
     __delay_ms(100);
+    char input_char = 0;
     PORTB = 0x10; // Test Row A
     if (PORTBbits.RB0) {
         // Row A Col 1 
-        Lcd_Write_Char('1');
+        input_char = '1';
     } else if (PORTBbits.RB1) {
         //ROW A Col 2
-        Lcd_Write_Char('2');
+        input_char = '2';
     } else if (PORTBbits.RB2) {
         //ROW A Col 3
-        Lcd_Write_Char('3');
+        input_char = '3';
     }
     
     PORTB = 0x20; // Test Row B
     if (PORTBbits.RB0) {
         // Row B Col 1 
-        Lcd_Write_Char('4');
+        input_char = '4';
     } else if (PORTBbits.RB1) {
         //ROW B Col 2
-        Lcd_Write_Char('5');
+        input_char = '5';
     } else if (PORTBbits.RB2) {
         //ROW B Col 3
-        Lcd_Write_Char('6');
+        input_char = '6';
     }
     
     PORTB = 0x40; // Test Row C
     if (PORTBbits.RB0) {
         // Row C Col 1 
-        Lcd_Write_Char('7');
+        input_char = '7';
     } else if (PORTBbits.RB1) {
         //ROW C Col 2
-        Lcd_Write_Char('8');
+        input_char = '8';
     } else if (PORTBbits.RB2) {
         //ROW C Col 3
-        Lcd_Write_Char('9');
+        input_char = '9';
     }
     
      PORTB = 0x80; // Test Row C
     if (PORTBbits.RB0) {
         // Row D Col 1 
-        Lcd_Write_Char('*');
+        input_char = '*';
     } else if (PORTBbits.RB1) {
         //ROW D Col 2
-        Lcd_Write_Char('0');
+        input_char = '0';
     } else if (PORTBbits.RB2) {
         //ROW D Col 3
-        Lcd_Write_Char('#');
+        input_char = '#';
     }
       __delay_ms(100);
       Lcd_Clear();
