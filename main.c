@@ -24,10 +24,15 @@
 void setup();
 char get_input_char();
 void keypad_isr();
+short check_password();
+void unlock();
+void delay();
+void reset_attempt();
 
 short letters = 0;
 char input[PASSWD_LENGTH];
 short new_char = 0;
+short attempts = 0;
  
 
 void __interrupt() interrupts() {
@@ -58,13 +63,31 @@ void main(void) {
         
         if (new_char == 1) {
             GIE = 0; //Disable interrupts
-            Lcd_Clear();
+            //Lcd_Clear();
             __delay_ms(50);
-            char buff[8]; // to be removed
-            sprintf(buff, "%d", letters);// to be removed 
-            Lcd_Write_String(buff);
+            Lcd_Write_Char('*');
             new_char = 0;
             GIE = 1; //Enable interrupts
+
+        }
+
+        if (letters == 4) {
+            attempts++;
+            __delay_ms(50);
+            Lcd_Clear();
+            short password_correct = check_password();
+            if (password_correct == 1) {
+                Lcd_Write_String("Correct Pass!");
+                __delay_ms(1500);
+                unlock();
+            }
+            else {
+                Lcd_Write_String("Wrong Pass!");
+                __delay_ms(1500);
+                delay();
+            }
+            Lcd_Clear();
+            reset_attempt();// Attempt done.
         }
        
     }
@@ -167,4 +190,32 @@ char get_input_char() {
      PORTB = PORTB_NOMINAL;
      return input_char;
       
+}
+
+short check_password()
+{
+    int result = strcmp(PASSWD, input);
+    if (result == 0) return 1; // Equal
+    else return 0;
+}
+
+void unlock()
+{
+    //Unlock and hold until a pin changes (door)
+    attempts = 0;
+
+}
+
+void delay()
+{
+    //Delay with respect to 'attempts'
+}
+
+void reset_attempt()
+{
+    letters = 0;
+    for (int i = 0; i < sizeof(input); i++){
+        input[i] = 0;
+    }
+    new_char = 0;
 }
