@@ -63,9 +63,8 @@ void main(void) {
         
         if (new_char == 1) {
             GIE = 0; //Disable interrupts
-            //Lcd_Clear();
-            __delay_ms(50);
             Lcd_Write_Char('*');
+            __delay_ms(50);
             new_char = 0;
             GIE = 1; //Enable interrupts
 
@@ -73,8 +72,8 @@ void main(void) {
 
         if (letters == 4) {
             attempts++;
-            __delay_ms(50);
             Lcd_Clear();
+            __delay_ms(50);
             short password_correct = check_password();
             if (password_correct == 1) {
                 Lcd_Write_String("Correct Pass!");
