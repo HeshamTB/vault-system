@@ -1,6 +1,8 @@
 /*
  * File:   main.c
- * Author: hesham
+ * Author: Hesham Banafa
+ * Author: Mohammad Alghamdi
+ * Author: Abduallah Alawi
  *
  * Created on April 17, 2021, 2:56 AM
  */
