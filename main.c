@@ -32,9 +32,9 @@ void delay();
 void reset_attempt();
 
 short letters = 0;
-char input[PASSWD_LENGTH];
-short new_char = 0;
-short attempts = 0;
+char input[PASSWD_LENGTH]; //User input
+short new_char = 0; // used as flag
+short attempts = 0; // Remember count of wrong attempts to delay or lock down.
  
 
 void __interrupt() interrupts()
