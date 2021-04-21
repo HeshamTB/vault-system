@@ -35,7 +35,8 @@ short new_char = 0;
 short attempts = 0;
  
 
-void __interrupt() interrupts() {
+void __interrupt() interrupts()
+{
     /* Using all INTx for same job. Should use PORTB change interrupts*/
     if (INT0IF 
         || INT1IF
@@ -51,7 +52,8 @@ void __interrupt() interrupts() {
     return;
 }
 
-void main(void) {
+void main(void)
+{
     
     setup();
     Lcd_Write_String(MOTD_S);
@@ -93,7 +95,8 @@ void main(void) {
     return;
 }
 
-void setup() {
+void setup()
+{
     
     ANCON0 = 0;
     ANCON1 = 0;
@@ -107,7 +110,8 @@ void setup() {
     Lcd_Init();
 }
 
-void keypad_isr() {
+void keypad_isr()
+{
     /*
      ISR Adds the inputed char into input[] in general scope.
      */
@@ -120,22 +124,10 @@ void keypad_isr() {
             break;
         }
     }
-    //input[PASSWD_LENGTH-letters] = input_char;
-    //Lcd_Write_String(input);
-      //__delay_ms(100);
-      //Lcd_Clear();
-//      if (letters == 0 ) {
-//          Lcd_Write_String("checking password");
-//          letters = PASSWD_LENGTH;
-//      }
-      //else Lcd_Write_String( (char)letters);
-      //Lcd_Write_Char('*');
-      
-//      __delay_ms(300);
-//      Lcd_Clear();
 }
 
-char get_input_char() {
+char get_input_char()
+{
 
     __delay_ms(100);
     char input_char = 0;
