@@ -30,6 +30,7 @@ short check_password(void);
 void unlock(void);
 void delay(void);
 void reset_attempt(void);
+void lock_down(void);
 
 short letters = 0;
 char input[PASSWD_LENGTH]; //User input
@@ -205,7 +206,7 @@ void delay(void)
     //T0CON = 0x04; //16bit 1:32 pre-scaler OFF
     if (attempts == 1) return; //no  delay after 1
     else if (attempts < 6) __delay_ms(5000); // Five second
-    //else lock_down();
+    else lock_down();
 }
 
 void reset_attempt(void)
@@ -215,4 +216,18 @@ void reset_attempt(void)
         input[i] = 0;
     }
     new_char = 0;
+}
+
+void lock_down(void)
+{
+    /*
+     For multiple wrong attempts, This should lock down
+     the system until power is reset.
+     */
+    __delay_ms(50);
+    Lcd_Clear();
+    __delay_ms(50);
+    Lcd_Write_String("Locked down");
+    while(1);
+
 }
