@@ -23,13 +23,13 @@
 #define PASSWD_LENGTH 5 // Pass + null char
 #define PASSWD "1234"
 
-void setup();
-char get_input_char();
-void keypad_isr();
-short check_password();
-void unlock();
-void delay();
-void reset_attempt();
+void setup(void);
+char get_input_char(void);
+void keypad_isr(void);
+short check_password(void);
+void unlock(void);
+void delay(void);
+void reset_attempt(void);
 
 short letters = 0;
 char input[PASSWD_LENGTH]; //User input
@@ -97,7 +97,7 @@ void main(void)
     return;
 }
 
-void setup()
+void setup(void)
 {
     
     ANCON0 = 0;
@@ -112,7 +112,7 @@ void setup()
     Lcd_Init();
 }
 
-void keypad_isr()
+void keypad_isr(void)
 {
     /*
      ISR Adds the inputed char into input[] in general scope.
@@ -128,7 +128,7 @@ void keypad_isr()
     }
 }
 
-char get_input_char()
+char get_input_char(void)
 {
 
     __delay_ms(100);
@@ -185,21 +185,21 @@ char get_input_char()
       
 }
 
-short check_password()
+short check_password(void)
 {
     int result = strcmp(PASSWD, input);
     if (result == 0) return 1; // Equal
     else return 0;
 }
 
-void unlock()
+void unlock(void)
 {
     //Unlock and hold until a pin changes (door)
     attempts = 0;
 
 }
 
-void delay()
+void delay(void)
 {
     //Delay with respect to 'attempts'
     //T0CON = 0x04; //16bit 1:32 pre-scaler OFF
@@ -208,7 +208,7 @@ void delay()
     //else lock_down();
 }
 
-void reset_attempt()
+void reset_attempt(void)
 {
     letters = 0;
     for (int i = 0; i < sizeof(input); i++){
