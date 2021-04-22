@@ -204,7 +204,7 @@ void delay(void)
     //Delay with respect to 'attempts'
     //T0CON = 0x04; //16bit 1:32 pre-scaler OFF
     if (attempts == 1) return; //no  delay after 1
-    else if (attempts < 6) __delay_ms(60000); // One min delay
+    else if (attempts < 6) __delay_ms(5000); // Five second
     //else lock_down();
 }
 
