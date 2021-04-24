@@ -77,7 +77,7 @@ void main(void)
 
         }
 
-        if (letters == 4) {
+        if (letters >= 4) {
             attempts++;
             Lcd_Clear();
             __delay_ms(50);
