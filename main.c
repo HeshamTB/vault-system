@@ -45,7 +45,6 @@ void __interrupt() interrupts()
         || INT1IF
         || INT2IF
         || INT3IF){
-        //letters--;
         keypad_isr();
         INT0IF = 0;        
         INT1IF = 0;
@@ -60,7 +59,7 @@ void main(void)
     
     setup();
     Lcd_Write_String(MOTD_S);
-    __delay_ms(1000);
+    __delay_ms(2500);
     Lcd_Clear();
     PORTB = PORTB_NOMINAL;
     
@@ -68,8 +67,11 @@ void main(void)
         
         if (new_char == 1) {
             GIE = 0; //Disable interrupts
-            Lcd_Write_Char('*');
-            __delay_ms(50);
+            //Lcd_Write_Char('*');
+            Lcd_Clear();
+            __delay_ms(100);
+            Lcd_Write_String(input);
+            __delay_ms(100);
             new_char = 0;
             GIE = 1; //Enable interrupts
 
@@ -119,6 +121,7 @@ void keypad_isr(void)
      ISR Adds the inputed char into input[] in general scope.
      */
     char input_char = get_input_char();
+    __delay_ms(500); // For debounce
     for (int i = 0; i < sizeof(input) -1; i++){
         if (input[i] == '\0') {
             input[i] = input_char;
@@ -132,7 +135,6 @@ void keypad_isr(void)
 char get_input_char(void)
 {
 
-    __delay_ms(100);
     char input_char = 0;
     PORTB = 0x10; // Test Row A
     if (PORTBbits.RB0) {
