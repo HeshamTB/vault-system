@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <pic18f45k80.h>
 
 #include "config.h"
 #include "lcd.h"
@@ -22,6 +23,8 @@
 
 #define PASSWD_LENGTH 5 // Pass + null char
 #define PASSWD "1234"
+
+#define DOOR_LOCK_PIN PORTA7
 
 void setup(void);
 char get_input_char(void);
@@ -34,6 +37,9 @@ void lock_down(void);
 
 short letters = 0;
 char input[PASSWD_LENGTH]; //User input
+
+/** Dynamic password. Changes during runtime */
+char password[PASSWD_LENGTH];
 short new_char = 0; // used as flag
 short attempts = 0; // Remember count of wrong attempts to delay or lock down.
  
@@ -62,7 +68,7 @@ void main(void)
     __delay_ms(2500);
     Lcd_Clear();
     PORTB = PORTB_NOMINAL;
-    
+    strcpy(password, PASSWD); // init pass
     while(1) {
         
         if (new_char == 1) {
@@ -112,6 +118,8 @@ void setup(void)
     INTCON = 0b10010000;
     INTCON2 = 0b11111000;
     INTCON3 = 0b00111000;
+    TRISA7 = 1; // RA7 Input
+    LATA7 = 0;
     Lcd_Init();
 }
 
@@ -190,7 +198,7 @@ char get_input_char(void)
 
 short check_password(void)
 {
-    int result = strcmp(PASSWD, input);
+    int result = strcmp(password, input);
     if (result == 0) return 1; // Equal
     else return 0;
 }
@@ -199,6 +207,15 @@ void unlock(void)
 {
     //Unlock and hold until a pin changes (door)
     attempts = 0;
+    reset_attempt(); //to clear input buffer
+    //TODO: Hold here until RA7 goes high.
+    //Allow changing password here
+    while (!LATA7){ // While door unlocked
+        if (new_char == 1 && input[0] == '*') {
+            // Take in new password.
+        }
+    }
+    
 
 }
 
