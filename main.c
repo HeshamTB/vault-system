@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <pic18.h>
 
 #include "config.h"
 #include "lcd.h"
@@ -19,6 +20,9 @@
 #define MOTD_S "Vault System"
 
 #define PORTB_NOMINAL 0xF0
+
+#define UNLCOKED_LED_PIN LATA7
+#define LOCKED_LED_PIN LATA6
 
 #define PASSWD_LENGTH 5 // Pass + null char
 #define PASSWD "1234"
@@ -62,6 +66,8 @@ void main(void)
     __delay_ms(2500);
     Lcd_Clear();
     PORTB = PORTB_NOMINAL;
+    LOCKED_LED_PIN = 1;
+    UNLCOKED_LED_PIN = 0;
     
     while(1) {
         
@@ -112,6 +118,7 @@ void setup(void)
     INTCON = 0b10010000;
     INTCON2 = 0b11111000;
     INTCON3 = 0b00111000;
+    TRISA = 0b00111111;
     Lcd_Init();
 }
 
@@ -183,6 +190,7 @@ char get_input_char(void)
         //ROW D Col 3
         input_char = '#';
     }
+     __delay_ms(100);
      PORTB = PORTB_NOMINAL;
      return input_char;
       
@@ -199,6 +207,14 @@ void unlock(void)
 {
     //Unlock and hold until a pin changes (door)
     attempts = 0;
+    UNLCOKED_LED_PIN = 1;
+    LOCKED_LED_PIN = 0;
+   
+    __delay_ms(5000);
+    
+    UNLCOKED_LED_PIN = 0;
+    LOCKED_LED_PIN = 1;
+    
 
 }
 
