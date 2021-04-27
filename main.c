@@ -35,11 +35,13 @@ void unlock(void);
 void delay(void);
 void reset_attempt(void);
 void lock_down(void);
+void reset_pass(void);
 
 short letters = 0;
 char input[PASSWD_LENGTH]; //User input
 short new_char = 0; // used as flag
 short attempts = 0; // Remember count of wrong attempts to delay or lock down.
+char password[PASSWD_LENGTH];
  
 
 void __interrupt() interrupts()
@@ -68,7 +70,7 @@ void main(void)
     PORTB = PORTB_NOMINAL;
     LOCKED_LED_PIN = 1;
     UNLCOKED_LED_PIN = 0;
-    
+    strcpy(password, PASSWD);
     while(1) {
         
         if (new_char == 1) {
@@ -198,7 +200,7 @@ char get_input_char(void)
 
 short check_password(void)
 {
-    int result = strcmp(PASSWD, input);
+    int result = strcmp(password, input);
     if (result == 0) return 1; // Equal
     else return 0;
 }
@@ -209,8 +211,13 @@ void unlock(void)
     attempts = 0;
     UNLCOKED_LED_PIN = 1;
     LOCKED_LED_PIN = 0;
-   
-    __delay_ms(5000);
+    reset_attempt(); //clear input buffer and letters count
+    __delay_ms(5000);// Give chance
+    if (new_char == 1 && input[0] == '*') {
+        new_char = 0;
+        reset_pass();
+    }
+    
     
     UNLCOKED_LED_PIN = 0;
     LOCKED_LED_PIN = 1;
@@ -248,4 +255,30 @@ void lock_down(void)
     Lcd_Write_String("Locked down");
     while(1);
 
+}
+
+void reset_pass(void)
+{
+    reset_attempt();
+    Lcd_Clear();
+    __delay_ms(50);
+    Lcd_Write_String("Pass reset");
+    __delay_ms(1000);
+    Lcd_Clear();
+    __delay_ms(50);
+    while(letters != 4) {
+        if (new_char == 1){
+            Lcd_Write_Char('*');
+            __delay_ms(50);
+            new_char = 0;
+        }
+    }
+    // Here should have new pass in input
+    strcpy(password, input); // New pass set
+    Lcd_Clear();
+    __delay_ms(50);
+    
+    Lcd_Write_String("Password set");
+    __delay_ms(1500);
+    Lcd_Clear();
 }
